@@ -47,5 +47,7 @@ class Board {
     // this.rows[4][5] = entity;
   }
 
-  getEntity(position) {}
+  getEntity(position) {
+    return this.rows[position.row][position.col];
+  }
 }

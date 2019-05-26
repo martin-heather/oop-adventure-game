@@ -20,7 +20,7 @@ const sounds = {
 let GAME_STATE = 'PLAY';
 
 // init board
-// Create a board with 20 rows and 25 columns (can play around to test different sizes) and render it
+// Code creates a board with 20 rows and 25 columns (can play around to test different sizes) and render it
 const board = new Board(24, 15);
 board.render(boardElement);
 
@@ -28,7 +28,7 @@ const MIDDLE_ROW = Math.floor(board.rows.length / 2);
 const MIDDLE_COL = Math.floor(board.rows[0].length / 2);
 
 // init player
-// create player at the center of the board
+// Code creates player at the center of the board
 //]with 2 items
 //and render it
 const player = new Player('Heather', {
@@ -44,8 +44,8 @@ player.render(boardElement);
 
 // monsters
 
-// Create all the monsters entities and set them on the board at a random position
-// Give each monster a random name, random level (1-3), a potion (random rarity 0-3), random gold (0-50)
+// Code creates all the monsters entities and sets them on the board at a random position
+// ]Gives each monster a random name, random level (1-3), a potion (random rarity 0-3), random gold (0-50)
 // Give one monster the key
 for (let i = 0; i < MAX_MONSTERS; i++) {
   board.setEntity(
@@ -60,14 +60,19 @@ for (let i = 0; i < MAX_MONSTERS; i++) {
 }
 
 // items
-// Add code to create a potion and a bomb entity and set them at a random board position
+// Code creates a potion and a bomb entity and set them at a random board position
+
+board.setEntity(new Potion(getRandom(0, 3)), getRandomPosition());
+board.setEntity(new Bomb(getRandom(0, 3)), getRandomPosition());
 
 // gold
-// Add code to create a gold entity and place it at a random position on the board
+// Code creates a gold entity and place it at a random position on the board
+
+board.setEntity(new Gold(getRandom(10, 50)), getRandomPosition());
 
 // dungeons
-// Add code for an opened dungeon and a closed dungeon you can loot (random position)
-// Add code for a dungeon that is closed and has the puppy (random position)
+// Code creates an opened dungeon and a closed dungeon you can loot (random position)
+// Code creates a dungeon that is closed and has the puppy (random position)
 
 board.setEntity(
   new Dungeon(true, false, getRandom(0, 50), 'items'),
@@ -83,14 +88,15 @@ board.setEntity(
 );
 
 // trader
-// Add code for a trader with a potion of each rarity (0 to 3), bomb of each rarity and a key at a random position
+// Code creates a trader
+//]with a potion of each rarity (0 to 3), bomb of each rarity and a key at a random position
 
 board.setEntity(new Trader('items'), getRandomPosition());
 
 // event handlers
 
 let monsterAttack;
-// UPDATE this event listener to move the player
+// This event listener moves the player
 //] Add code to check if the entity at the new player position (after move) is a monster. If so, call the encounterMonster function
 document.addEventListener('keydown', ev => {
   if (ev.key === 'ArrowLeft') {
@@ -107,15 +113,15 @@ document.addEventListener('keydown', ev => {
   }
   if (!ev.key.includes('Arrow') || GAME_STATE === 'GAME_OVER') return;
   if (sounds.bg.paused) playMusic('bg');
-  // clearInterval(monsterAttack); // stop monster attack when player moves
+  // clearInterval(monsterAttack); // stops monster attack when player moves
 
   // updateActionCam();
 });
 
 // helper functions
 
-// UPDATE the function to return a random position on the board that is not occupied by an entity (Grass is fine) or the player's initial position (center)
-// The parameter is a Board object//]]
+// Function returns a random position on the board that is not occupied by an entity (Grass is fine) or the player's initial position (center)
+// The parameter is a Board object //] is the parameter needed?
 function getRandomPosition(/*board*/) {
   let position = 'unassigned';
   while (position === 'unassigned') {
