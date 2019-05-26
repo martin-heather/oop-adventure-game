@@ -21,7 +21,7 @@ let GAME_STATE = 'PLAY';
 
 // init board
 // Create a board with 20 rows and 25 columns (can play around to test different sizes) and render it
-const board = new Board(15, 10);
+const board = new Board(24, 15);
 board.render(boardElement);
 
 const MIDDLE_ROW = Math.floor(board.rows.length / 2);
@@ -50,9 +50,12 @@ player.render(boardElement);
 for (let i = 0; i < MAX_MONSTERS; i++) {
   board.setEntity(
     new Monster(
-      MONSTER_NAMES[getRandom(0, MONSTER_NAMES.length)],
-      getRandom(1, 3) /*, [], 0*/ //]set additional argments
-    )
+      MONSTER_NAMES[getRandom(0, MONSTER_NAMES.length - 1)],
+      getRandom(1, 3),
+      'items',
+      getRandom(0, 50) //]set item argment
+    ),
+    getRandomPosition()
   );
 }
 
@@ -66,8 +69,23 @@ for (let i = 0; i < MAX_MONSTERS; i++) {
 // Add code for an opened dungeon and a closed dungeon you can loot (random position)
 // Add code for a dungeon that is closed and has the puppy (random position)
 
+board.setEntity(
+  new Dungeon(true, false, getRandom(0, 50), 'items'),
+  getRandomPosition()
+);
+board.setEntity(
+  new Dungeon(false, false, getRandom(0, 50), 'items'),
+  getRandomPosition()
+);
+board.setEntity(
+  new Dungeon(false, true, getRandom(0, 50), 'items'),
+  getRandomPosition()
+);
+
 // trader
 // Add code for a trader with a potion of each rarity (0 to 3), bomb of each rarity and a key at a random position
+
+board.setEntity(new Trader('items'), getRandomPosition());
 
 // event handlers
 
@@ -98,16 +116,20 @@ document.addEventListener('keydown', ev => {
 
 // UPDATE the function to return a random position on the board that is not occupied by an entity (Grass is fine) or the player's initial position (center)
 // The parameter is a Board object//]]
-function getRandomPosition(board) {
-  let x = getRandom(2, board.rows.length - 1);
-  let y = getRandom(2, board.rows[0].length - 1);
-  if (
-    board.rows[x][y] instanceof Grass &&
-    board.rows[x][y] !== board.rows[MIDDLE_ROW][MIDDLE_COL]
-  ) {
-    return new Position(x, y);
-  } else {
-    getRandomPosition(board);
+function getRandomPosition(/*board*/) {
+  let position = 'unassigned';
+  while (position === 'unassigned') {
+    let x = getRandom(1, board.rows.length - 1);
+    let y = getRandom(1, board.rows[0].length - 1);
+    if (
+      board.rows[x][y] instanceof Grass === false ||
+      board.rows[x][y] === board.rows[MIDDLE_ROW][MIDDLE_COL]
+    ) {
+      position = 'unassigned';
+    } else {
+      position = 'assigned';
+      return new Position(x, y);
+    }
   }
 }
 

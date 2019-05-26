@@ -1,4 +1,4 @@
-//the Entity, Wall, Grass, Gold, Dungeon and Tradesman classes
+//The Entity, Wall, Grass, Gold, Dungeon and Trader classes
 
 class Entity {
   constructor(src) {
@@ -28,25 +28,25 @@ class Gold extends Entity {
   }
 }
 
-// class Dungeon extends Entity {
-//   constructor(isOpen, hasPuppy, gold, items) {
-//     super(src);
-//     this.isOpen = isOpen;
-//     this.hasPuppy = hasPuppy;
-//     this.gold = gold;
-//     this.items = items;
-//     if (this.isOpen) {
-//       this.src = 'open.png';
-//     } else {
-//       this.src = 'closed.png';
-//     }
-//   }
+class Dungeon extends Entity {
+  constructor(isOpen, hasPuppy, gold, items) {
+    super('dungeon/open.png');
+    this.isOpen = isOpen;
+    this.hasPuppy = hasPuppy;
+    this.gold = gold;
+    this.items = items;
+    if (this.isOpen) {
+      this.setImg('dungeon/open.png');
+    } else {
+      this.setImg('dungeon/closed.png');
+    }
+  }
 
-//   isOpen() {
-//     this.isOpen = true;
-//     this.src = this.src = 'open.png';
-//   }
-// }
+  isOpen() {
+    this.isOpen = true;
+    this.setImg('dungeon/open.png');
+  }
+}
 
 class Trader extends Entity {
   constructor(items) {

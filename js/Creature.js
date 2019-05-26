@@ -28,7 +28,7 @@ class Creature extends Entity {
 
 class Monster extends Creature {
   constructor(name, level, items, gold) {
-    super(name, 'monsters/WizzrobeFire.gif', level, items, gold);
+    super(name, `monsters/${name.split(' ').join('')}.gif`, level, items, gold);
     this.strength = this.level * 10;
     this.attackSpeed = 3000 / this.level;
   }
