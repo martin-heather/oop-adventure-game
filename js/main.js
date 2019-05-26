@@ -38,7 +38,7 @@ const player = new Player('Heather', {
 player.render(boardElement);
 
 // Keep this, used to display the information on the box on the right of the board
-// *updateActionCam();
+updateActionCam();
 
 // board entities
 
@@ -166,75 +166,79 @@ function getRandomPosition(/*board*/) {
 //   playMusic('bg');
 // }
 
-// UPDATE this function to set the board entity at position to a grass entity
-// *function clearEntity(position) {}
+// This function sets the board entity at position to a grass entity
+function clearEntity(position) {
+  board.setEntity(new Grass(), position);
+}
 
 // DOM manipulation functions
 
 // This function updates the 'action cam' - the box showing the enemy and player info as well as the actions
 // It is called after an event happened (e.g. used item) to update the information shown in the action box
 // UPDATE the entity variable to be the entity at the player position
-// *function updateActionCam() {
-//   const entity = null;
-//   actioncam.innerHTML = '';
-//   actioncam.appendChild(createActionView(entity));
-//   actioncam.appendChild(createActionView(player));
-//   actioncam.appendChild(createActionMenu(entity));
-// }
+function updateActionCam() {
+  const entity = board.getEntity(player.position);
+  actioncam.innerHTML = '';
+  actioncam.appendChild(createActionView(entity));
+  actioncam.appendChild(createActionView(player));
+  actioncam.appendChild(createActionMenu(entity));
+}
 
 // UPDATE this function based on the comments
 // Replace the if condition calling createCreatureView to only execute if the entity is a creature
 // Replace the if condition creating the h4 value element to only execute if the entity has a value
-// Replace the ternary condition setting the img.id to be 'player-cam' if the entity is a Player, 'entity-cam' otherwise
+// ]Replace the ternary condition setting the img.id to be 'player-cam' if the entity is a Player, 'entity-cam' otherwise
 // Replace the ternary condition setting the img.src to be 'imgs/player/attack.png' if the entity is a Player, else use the entity's image src
-// *function createActionView(entity) {
-//   const actionView = document.createElement('div');
-//   actionView.className = 'action-view';
-//   const infoWrapper = document.createElement('div');
+function createActionView(entity) {
+  const actionView = document.createElement('div');
+  actionView.className = 'action-view';
+  const infoWrapper = document.createElement('div');
 
-//   const name = document.createElement('h3');
-//   // Add code here to set the name text to be the entity name or use the constructor name as fallback
-//   infoWrapper.appendChild(name);
+  const name = document.createElement('h3');
+  name.textContent = entity.name || entity.constructor.name;
+  infoWrapper.appendChild(name);
 
-//   if (true) createCreatureView(infoWrapper, entity);
+  if (/*instanceof Creature*/ true) createCreatureView(infoWrapper, entity);
 
-//   if (true) {
-//     const value = document.createElement('h4');
-//     // Add code here to set the value text to the entity's value e.g. "Value: 20"
-//     infoWrapper.appendChild(value);
-//   }
+  if (entity.value) {
+    const value = document.createElement('h4');
+    value.textContent = entity.value;
+    // Add code here to set the value text to the entity's value e.g. "Value: 20"
+    infoWrapper.appendChild(value);
+  }
 
-//   // Add the entity image
-//   const img = document.createElement('img');
-//   img.id = true ? 'player-cam' : 'entity-cam';
-//   img.src = true ? 'imgs/player/attack.png' : 'entity image src';
-//   actionView.appendChild(infoWrapper);
-//   actionView.appendChild(img);
+  //] Add the entity image
+  const img = document.createElement('img');
+  console.log(entity.element.src);
+  img.id = true ? 'player-cam' : 'entity-cam';
+  img.src = true ? 'imgs/player/attack.png' : entity.element.src;
+  actionView.appendChild(infoWrapper);
+  actionView.appendChild(img);
 
-//   return actionView;
-// }
+  return actionView;
+}
 
 // UPDATE this function based on the comments
-// *function createCreatureView(root, creature) {
-//   const level = document.createElement('h4');
-//   // Add code here to set the level text to the creature's level e.g. "Level 1"
-//   const hp = document.createElement('h4');
-//   hp.id = creature.constructor.name + '-hp';
-//   // Add code here to set the hp text to the creature's hp e.g. "HP: 100"
-//   const gold = document.createElement('h4');
-//   // Add code here to set the gold text to the creature's gold e.g. "Gold: 10"
-//   root.appendChild(hp);
-//   root.appendChild(level);
-//   root.appendChild(gold);
-// }
+function createCreatureView(root, creature) {
+  const level = document.createElement('h4');
+  // Add code here to set the level text to the creature's level e.g. "Level 1"
+  const hp = document.createElement('h4');
+  hp.id = creature.constructor.name + '-hp';
+  // Add code here to set the hp text to the creature's hp e.g. "HP: 100"
+  const gold = document.createElement('h4');
+  // Add code here to set the gold text to the creature's gold e.g. "Gold: 10"
+  root.appendChild(hp);
+  root.appendChild(level);
+  root.appendChild(gold);
+}
 
 // UPDATE this function to create the appropriate menu based on the entity type. Use the createMenu functions (e.g. createPickupMenu)
-// *function createActionMenu(entity) {
-//   const actionMenu = document.createElement('div');
-//   actionMenu.id = 'action-menu';
+function createActionMenu(entity) {
+  const actionMenu = document.createElement('div');
+  actionMenu.id = 'action-menu';
 
-//   return actionMenu;
-// }
+  return actionMenu;
+}
 
 // UPDATE the pickupBtn event listener function to pickup the entity
 // Add a call to clearEntity in the listener function to set a Grass entity at the player position

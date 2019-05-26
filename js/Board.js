@@ -44,7 +44,6 @@ class Board {
     let parentNode = document.getElementById(`row${position.row}`);
     this.rows[position.row][position.col] = entity;
     parentNode.replaceChild(entity.element, oldChild.element);
-    // this.rows[4][5] = entity;
   }
 
   getEntity(position) {
