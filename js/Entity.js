@@ -51,6 +51,6 @@ class Dungeon extends Entity {
 class Trader extends Entity {
   constructor(items) {
     super('trader.gif');
-    this.items = items;
+    this.items = [];
   }
 }

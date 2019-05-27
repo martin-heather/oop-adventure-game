@@ -40,7 +40,7 @@ class Board {
   //update() {}
 
   setEntity(entity, position) {
-    const oldChild = this.rows[position.row][position.col]; //] fix hard-coded positions here
+    const oldChild = this.rows[position.row][position.col];
     let parentNode = document.getElementById(`row${position.row}`);
     this.rows[position.row][position.col] = entity;
     parentNode.replaceChild(entity.element, oldChild.element);

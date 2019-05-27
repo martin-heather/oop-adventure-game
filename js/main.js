@@ -21,7 +21,7 @@ let GAME_STATE = 'PLAY';
 
 // init board
 // Code creates a board with 20 rows and 25 columns (can play around to test different sizes) and render it
-const board = new Board(24, 15);
+const board = new Board(20, 25);
 board.render(boardElement);
 
 const MIDDLE_ROW = Math.floor(board.rows.length / 2);
@@ -45,15 +45,15 @@ updateActionCam();
 // monsters
 
 // Code creates all the monsters entities and sets them on the board at a random position
-// ]Gives each monster a random name, random level (1-3), a potion (random rarity 0-3), random gold (0-50)
+// Code gives each monster a random name, random level (1-3), a potion (random rarity 0-3), random gold (0-50)
 // Give one monster the key
 for (let i = 0; i < MAX_MONSTERS; i++) {
   board.setEntity(
     new Monster(
       MONSTER_NAMES[getRandom(0, MONSTER_NAMES.length - 1)],
       getRandom(1, 3),
-      'items',
-      getRandom(0, 50) //]set item argment
+      [new Potion(getRandom(0, 3)],
+      getRandom(0, 50) 
     ),
     getRandomPosition()
   );
@@ -75,15 +75,15 @@ board.setEntity(new Gold(getRandom(10, 50)), getRandomPosition());
 // Code creates a dungeon that is closed and has the puppy (random position)
 
 board.setEntity(
-  new Dungeon(true, false, getRandom(0, 50), 'items'),
+  new Dungeon(true, false, getRandom(0, 50), [new Bomb(getRandom(0, 3)), new Potion(getRandom(0, 3)]),
   getRandomPosition()
 );
 board.setEntity(
-  new Dungeon(false, false, getRandom(0, 50), 'items'),
+  new Dungeon(false, false, getRandom(0, 50), [new Bomb(getRandom(0, 3)), new Potion(getRandom(0, 3)), new Key(3)]),
   getRandomPosition()
 );
 board.setEntity(
-  new Dungeon(false, true, getRandom(0, 50), 'items'),
+  new Dungeon(false, true, getRandom(0, 50), [new Bomb(getRandom(0, 3)), new Potion(getRandom(0, 3))]),
   getRandomPosition()
 );
 
@@ -185,10 +185,10 @@ function updateActionCam() {
 }
 
 // UPDATE this function based on the comments
-// Replace the if condition calling createCreatureView to only execute if the entity is a creature
-// Replace the if condition creating the h4 value element to only execute if the entity has a value
-// ]Replace the ternary condition setting the img.id to be 'player-cam' if the entity is a Player, 'entity-cam' otherwise
-// Replace the ternary condition setting the img.src to be 'imgs/player/attack.png' if the entity is a Player, else use the entity's image src
+// // ✓ Replace the if condition calling createCreatureView to only execute if the entity is a creature
+// // ✓ Replace the if condition creating the h4 value element to only execute if the entity has a value
+// Replace the ternary condition setting the img.id to be 'player-cam' if the entity is a Player, 'entity-cam' otherwise
+// // ✓ Replace the ternary condition setting the img.src to be 'imgs/player/attack.png' if the entity is a Player, else use the entity's image src
 function createActionView(entity) {
   const actionView = document.createElement('div');
   actionView.className = 'action-view';
@@ -197,21 +197,18 @@ function createActionView(entity) {
   const name = document.createElement('h3');
   name.textContent = entity.name || entity.constructor.name;
   infoWrapper.appendChild(name);
-
-  if (/*instanceof Creature*/ true) createCreatureView(infoWrapper, entity);
-
+  if (entity instanceof Creature) createCreatureView(infoWrapper, entity);
   if (entity.value) {
+    //entity.value is truthy or falsey
     const value = document.createElement('h4');
     value.textContent = entity.value;
     // Add code here to set the value text to the entity's value e.g. "Value: 20"
     infoWrapper.appendChild(value);
   }
 
-  //] Add the entity image
   const img = document.createElement('img');
-  console.log(entity.element.src);
   img.id = true ? 'player-cam' : 'entity-cam';
-  img.src = true ? 'imgs/player/attack.png' : entity.element.src;
+  img.src = false ? 'imgs/player/attack.png' : entity.element.src;
   actionView.appendChild(infoWrapper);
   actionView.appendChild(img);
 
@@ -221,12 +218,15 @@ function createActionView(entity) {
 // UPDATE this function based on the comments
 function createCreatureView(root, creature) {
   const level = document.createElement('h4');
-  // Add code here to set the level text to the creature's level e.g. "Level 1"
+  // // ✓Add code here to set the level text to the creature's level e.g. "Level 1"
+  level.textContent = `Level: ${creature.level}`;
   const hp = document.createElement('h4');
   hp.id = creature.constructor.name + '-hp';
-  // Add code here to set the hp text to the creature's hp e.g. "HP: 100"
+  hp.textContent = `HP: ${creature.hp}`;
+  // // ✓Add code here to set the hp text to the creature's hp e.g. "HP: 100"
   const gold = document.createElement('h4');
-  // Add code here to set the gold text to the creature's gold e.g. "Gold: 10"
+  // // ✓Add code here to set the gold text to the creature's gold e.g. "Gold: 10"
+  gold.textContent = `Gold: ${creature.gold}`;
   root.appendChild(hp);
   root.appendChild(level);
   root.appendChild(gold);
@@ -236,23 +236,37 @@ function createCreatureView(root, creature) {
 function createActionMenu(entity) {
   const actionMenu = document.createElement('div');
   actionMenu.id = 'action-menu';
-
+  // if (entity instanceof Monster) {
+  //   createMonsterMenu(actionMenu, entity);
+  // }
+  if (entity instanceof Item || entity instanceof Gold) {
+    createPickupMenu(actionMenu, entity);
+  }
+  // if (entity instanceof Trader) {
+  //   createTradeMenu(actionMenu, entity);
+  // }
+  // if (entity instanceof Dungeon) {
+  //   createDungeonMenu(actionMenu, entity);
+  // }
   return actionMenu;
 }
 
-// UPDATE the pickupBtn event listener function to pickup the entity
-// Add a call to clearEntity in the listener function to set a Grass entity at the player position
-// *function createPickupMenu(root, entity) {
-//   const actions = document.createElement('div');
-//   actions.textContent = 'Actions';
-//   const pickupBtn = document.createElement('button');
-//   pickupBtn.textContent = 'Pickup';
-//   pickupBtn.addEventListener('click', () => {
-//     updateActionCam();
-//   });
-//   actions.appendChild(pickupBtn);
-//   root.appendChild(actions);
-// }
+// //✓ UPDATE the pickupBtn event listener function to pickup the entity
+// //✓ Add a call to clearEntity in the listener function to set a Grass entity at the player position
+function createPickupMenu(root, entity) {
+  const actions = document.createElement('div');
+  actions.textContent = 'Actions';
+  const pickupBtn = document.createElement('button');
+  pickupBtn.textContent = 'Pick up';
+  pickupBtn.addEventListener('click', () => {
+    // player.pickupBtn(entity);
+    player.pickup(entity);
+  });
+  clearEntity(player.position);
+  updateActionCam();
+  actions.appendChild(pickupBtn);
+  root.appendChild(actions);
+}
 
 // UPDATE this function to add a call to createItemActions(root, monster) if the player has items
 // Update the attackBtn event listener to attack the monster

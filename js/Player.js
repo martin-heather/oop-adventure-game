@@ -2,7 +2,7 @@
 
 class Player extends Creature {
   constructor(name, position, board, level, items, gold) {
-    super(name, 'player/front.png', level, items, gold);
+    super(name, 'player/front.png', 1, [], 0);
     this.attackSpeed = 2000 / this.level;
     this.exp = 0;
     this.position = position;
@@ -56,13 +56,23 @@ class Player extends Creature {
       }
     }
     this.render(this.root);
+    updateActionCam();
   }
 
   attack(entity) {
     setInterval(() => hit(entity, this.strength), this.attackSpeed);
   }
 
-  pickup(entity) {}
+  pickup(entity) {
+    if (entity instanceof Item) {
+      this.items.push(entity);
+      playSound('loot');
+    }
+    if (entity instanceof Gold) {
+      this.gold += entity.value;
+      playSound('gold');
+    }
+  }
 
   attack(entity) {}
 
