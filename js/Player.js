@@ -72,9 +72,10 @@ class Player extends Creature {
       this.gold += entity.value;
       playSound('gold');
     }
+    clearEntity(this.position);
   }
 
-  attack(entity) {}
+  // attack(entity) {}
 
   buy(item, trader) {}
 

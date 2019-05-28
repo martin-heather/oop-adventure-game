@@ -25,6 +25,7 @@ class Grass extends Entity {
 class Gold extends Entity {
   constructor(value) {
     super('gold.gif');
+    this.value = value;
   }
 }
 
@@ -51,6 +52,6 @@ class Dungeon extends Entity {
 class Trader extends Entity {
   constructor(items) {
     super('trader.gif');
-    this.items = [];
+    this.items = items;
   }
 }

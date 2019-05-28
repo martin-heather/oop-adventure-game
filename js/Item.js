@@ -42,7 +42,6 @@ class Bomb extends Item {
 class Key extends Item {
   constructor() {
     super(100, 3, 'key');
-    this.damage = (rarity + 1) * 30;
   }
 
   use(target) {
