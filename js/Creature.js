@@ -7,7 +7,7 @@ class Creature extends Entity {
     this.level = level;
     this.items = items;
     this.gold = gold;
-    this.hp = 100;
+    this.hp = this.level * 100;
     this.strength = this.level * 10;
     this.attackSpeed = 3000 / this.level;
   }
@@ -17,11 +17,13 @@ class Creature extends Entity {
   }
 
   hit(val) {
-    return Math.max(this.hp - val, 0);
+    this.hp = Math.max(this.hp - val, 0);
   }
 
   attack(entity) {
-    setInterval(() => hit(entity, this.strength), this.attackSpeed);
+    entity.hit(this.strength);
+    console.log(entity);
+    updateActionCam();
   }
 }
 
@@ -32,7 +34,8 @@ class Monster extends Creature {
     this.attackSpeed = 3000 / this.level;
   }
 
-  // attack(entity) {
-  //   return super.attack(entity);
-  // }
+  attack(entity) {
+    super.attack(entity);
+    playSound('mattack');
+  }
 }

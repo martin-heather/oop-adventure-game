@@ -45,7 +45,10 @@ class Key extends Item {
   }
 
   use(target) {
-    // - parameters: target (Dungeon)
     // - opens the dungeon and plays the item sound if the dungeon does not have the princess
+    Dungeon.isOpen;
+    if (dungeon.hasPuppy === false) {
+      playSound('loot');
+    }
   }
 }

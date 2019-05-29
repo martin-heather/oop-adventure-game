@@ -59,10 +59,6 @@ class Player extends Creature {
     updateActionCam();
   }
 
-  attack(entity) {
-    setInterval(() => hit(entity, this.strength), this.attackSpeed);
-  }
-
   pickup(entity) {
     if (entity instanceof Item) {
       this.items.push(entity);
@@ -75,7 +71,10 @@ class Player extends Creature {
     clearEntity(this.position);
   }
 
-  // attack(entity) {}
+  attack(entity) {
+    super.attack(entity);
+    playSound('pattack');
+  }
 
   buy(item, trader) {}
 
