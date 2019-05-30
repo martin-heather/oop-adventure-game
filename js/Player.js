@@ -76,11 +76,52 @@ class Player extends Creature {
     playSound('pattack');
   }
 
-  buy(item, trader) {}
+  sell(item, trader) {
+    this.gold += item.value;
+    remove(this.items, item);
+    trader.items.push(item);
+    playSound('trade');
+  }
 
-  useItem(item, target) {}
+  buy(item, trader) {
+    this.gold -= item.value;
+    this.items.push(item);
+    remove(trader.items, item);
+    playSound('trade');
+  }
 
-  getExpToLevel() {}
+  useItem(item, target) {
+    item.use(target);
+    remove(player.items, item);
+  }
 
-  levelUp(entity) {}
+  loot(entity) {
+    this.gold += entity.gold;
+    for (let i = 0; i < entity.items.length; i++) {
+      this.items.push(entity.items[i]);
+    }
+    entity.items = [];
+    entity.gold = 0;
+    playSound('loot');
+  }
+
+  getExpToLevel() {
+    return this.level * 10;
+  }
+
+  getExp(entity) {
+    this.exp += entity.level * 10;
+    let requirement = this.getExpToLevel();
+    if (requirement >= this.exp) {
+      this.levelUp(entity);
+    }
+  }
+
+  levelUp(entity) {
+    this.level + entity.level;
+    this.hp = this.getMaxHp();
+    this.strength = entity.level * 10;
+    this.attackSpeed = 3000 / this.level;
+    playSound('levelup');
+  }
 }

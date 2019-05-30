@@ -20,8 +20,7 @@ class Potion extends Item {
   }
 
   use(target) {
-    // - parameters: target (Creature)
-    // - Restores hp of target by potency value. HP of target can't go past its max HP.
+    target.hp += this.potency;
     // - Plays the item sound
   }
 }
@@ -33,8 +32,8 @@ class Bomb extends Item {
   }
 
   use(target) {
-    // - parameters: target (Creature)
-    // - damages hp of target by damage value. HP of target can't be lower than 0.
+    console.log(this);
+    target.hp = Math.max(target.hp - this.damage, 0);
     // - Plays the item sound
   }
 }
@@ -46,9 +45,7 @@ class Key extends Item {
 
   use(target) {
     // - opens the dungeon and plays the item sound if the dungeon does not have the princess
-    Dungeon.isOpen;
-    if (dungeon.hasPuppy === false) {
-      playSound('loot');
-    }
+    target.isOpen = true;
+    target.setImg('dungeon/open.png');
   }
 }

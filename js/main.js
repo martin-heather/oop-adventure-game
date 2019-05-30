@@ -213,9 +213,12 @@ function playerDeath() {
   playMusic('death');
 }
 
-// UPDATE this function to getExp from monster, loot the monster, and clear the entity (monster) at the player position
+// //✓UPDATE this function to getExp from monster, loot the monster, and clear the entity (monster) at the player position
 function defeatMonster(monster) {
   clearInterval(monsterAttack);
+  player.getExp(monster);
+  player.loot(monster);
+  clearEntity(player.position);
   playMusic('bg');
 }
 
@@ -260,7 +263,6 @@ function createActionView(entity) {
   }
 
   const img = document.createElement('img');
-  //*
   img.id = entity === player ? 'player-cam' : 'entity-cam';
   img.src = entity === player ? 'imgs/player/attack.png' : entity.element.src;
   actionView.appendChild(infoWrapper);
@@ -315,6 +317,7 @@ function createPickupMenu(root, entity) {
   pickupBtn.addEventListener('click', () => {
     player.pickup(entity);
     //player.pickupBtn(entity);
+    updateActionCam();
   });
 
   //updateActionCam();
@@ -335,7 +338,7 @@ function createMonsterMenu(root, monster) {
   let attackBtn = document.createElement('button');
   attackBtn.textContent = 'Attack';
   // //✓ Add code here to reset the player attack timeout to allow the player to attack a monster as soon as one is encountered
-  setTimeout(() => (attackBtn.disabled = false), 0);
+
   attackBtn.addEventListener('click', () => {
     if (monster.hp === 0) {
       defeatMonster(monster);
@@ -354,21 +357,30 @@ function createMonsterMenu(root, monster) {
 
 // UPDATE
 // // ✓update the forEach call to be on the player's items instead of an empty array
-// ]update the function passed to forEach to return immediately if the item is a Key (the key is not a valid item in a battle)
-// ]update the itemBtn event listener to call useItem on the player for potions, useItem on the monster for Bombs.
-// *Add a call to defeatMonster if its hp is 0 or lower (defeatMonster(monster);)
+// //✓ update the function passed to forEach to return immediately if the item is a Key (the key is not a valid item in a battle)
+// //✓ update the itemBtn event listener to call useItem on the player for potions, useItem on the monster for Bombs.
+// //✓ Add a call to defeatMonster if its hp is 0 or lower (defeatMonster(monster);)
 function createItemActions(root, monster) {
   const items = document.createElement('div');
   items.textContent = 'Items';
-  player.items.forEach(item => {
+  let noKeyArr = player.items.filter(
+    item => item instanceof Potion || item instanceof Bomb
+  ); //*
+  noKeyArr.forEach(item => {
     const itemBtn = document.createElement('button');
     // //✓ Add code here to set the itemBtn text to the item name
     itemBtn.textContent = item.name;
     itemBtn.addEventListener('click', () => {
+      if (item instanceof Potion) {
+        player.useItem(item, player);
+      }
+      if (item instanceof Bomb) {
+        player.useItem(item, monster);
+      }
       if (monster.hp === 0) {
         defeatMonster(monster);
+        updateActionCam();
       }
-      updateActionCam();
     });
     items.appendChild(itemBtn);
   });
@@ -392,8 +404,7 @@ function createTradeMenu(root, Trader) {
       itemBtn.disabled = true;
     }
     itemBtn.addEventListener('click', () => {
-      player.gold -= item.value;
-      player.items.push(item);
+      player.buy(item, Trader);
       updateActionCam();
     });
     buyAction.appendChild(itemBtn);
@@ -405,8 +416,7 @@ function createTradeMenu(root, Trader) {
     // //✓ Add code here to set the item text to the item's name and value e.g. "Common potion - 10G"
     itemBtn.textContent = `${item.name}: ${item.value} Gold`;
     itemBtn.addEventListener('click', () => {
-      player.gold += item.value;
-      remove(player.items, item);
+      player.sell(item, Trader);
       updateActionCam();
     });
     sellAction.appendChild(itemBtn);
@@ -418,8 +428,8 @@ function createTradeMenu(root, Trader) {
 // UPDATE the function based on the comments
 // //✓ Update the condition to create the openBtn only if the dungeon is not open
 // //✓ Update the if condition inside the else block to only win the game if the dungeon has the puppy
-// ]Update the openBtn event listener to use the key item on the dungeon
-// ]Update the lootBtn event listener to loot the dungeon
+// //✓ Update the openBtn event listener to use the key item on the dungeon
+// //✓ Update the lootBtn event listener to loot the dungeon
 function createDungeonMenu(root, dungeon) {
   const actions = document.createElement('div');
   actions.textContent = 'Actions';
@@ -429,35 +439,44 @@ function createDungeonMenu(root, dungeon) {
     // //✓Add code to get the key from the player items
     let keyArr = player.items.filter(item => item instanceof Key);
     let key = keyArr[0];
-    // //✓If the player does not have a key, set the openBtn to disabled
-    for (let i = 0; i < player.items.length; i++) {
-      if (keyArr.length === 0) {
-        openBtn.disabled = true;
 
-        openBtn.addEventListener('click', () => {
-          key.use(dungeon);
-          updateActionCam();
-        });
-        actions.appendChild(openBtn);
-        root.appendChild(actions);
+    // //✓If the player does not have a key, set the openBtn to disabled
+
+    if (keyArr.length === 0) {
+      openBtn.disabled = true;
+    } else if (keyArr.length > 0) {
+      openBtn.disabled = false;
+    }
+
+    openBtn.addEventListener('click', () => {
+      player.useItem(key, dungeon);
+      updateActionCam();
+    });
+    actions.appendChild(openBtn);
+    root.appendChild(actions);
+  } else {
+    if (dungeon.hasPuppy) {
+      boardElement.innerHTML =
+        '<h1>You saved the puppy! You WIN!</h1><img src="imgs/dungeon/puppy.jpg" width=500/>';
+      actioncam.style.display = 'none';
+      GAME_STATE = 'GAME_OVER';
+      playMusic('win');
+    } else {
+      const lootBtn = document.createElement('button');
+      lootBtn.textContent = 'Loot';
+      // //✓ Add code here to check if the dungeon has gold or items, if not set the lootBtn to disabled
+      if (dungeon.items.length === 0 && dungeon.gold === 0) {
+        lootBtn.disabled = true;
       } else {
-        if (dungeon.hasPuppy) {
-          boardElement.innerHTML =
-            '<h1>You WIN!</h1><img src="imgs/dungeon/puppy.png" width=500/>';
-          actioncam.style.display = 'none';
-          GAME_STATE = 'GAME_OVER';
-          playMusic('win');
-        } else {
-          const lootBtn = document.createElement('button');
-          lootBtn.textContent = 'Loot';
-          // ]Add code here to check if the dungeon has gold or items, if not set the lootBtn to disabled
-          lootBtn.addEventListener('click', () => {
-            updateActionCam();
-          });
-          actions.appendChild(lootBtn);
-          root.appendChild(actions);
-        }
+        lootBtn.disabled = false;
       }
+
+      lootBtn.addEventListener('click', () => {
+        player.loot(dungeon);
+        updateActionCam();
+      });
+      actions.appendChild(lootBtn);
+      root.appendChild(actions);
     }
   }
 }
