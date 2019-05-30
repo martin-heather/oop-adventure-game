@@ -93,6 +93,7 @@ class Player extends Creature {
   useItem(item, target) {
     item.use(target);
     remove(player.items, item);
+    updateActionCam();
   }
 
   loot(entity) {

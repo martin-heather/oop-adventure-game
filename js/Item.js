@@ -21,7 +21,7 @@ class Potion extends Item {
 
   use(target) {
     target.hp += this.potency;
-    // - Plays the item sound
+    playSound('potion');
   }
 }
 
@@ -32,9 +32,8 @@ class Bomb extends Item {
   }
 
   use(target) {
-    console.log(this);
     target.hp = Math.max(target.hp - this.damage, 0);
-    // - Plays the item sound
+    playSound('bomb');
   }
 }
 
@@ -44,8 +43,10 @@ class Key extends Item {
   }
 
   use(target) {
-    // - opens the dungeon and plays the item sound if the dungeon does not have the princess
     target.isOpen = true;
     target.setImg('dungeon/open.png');
+    if (target.hasPuppy === false) {
+      playSound('key');
+    }
   }
 }

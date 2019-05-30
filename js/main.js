@@ -14,6 +14,9 @@ const sounds = {
   death: new Audio('sounds/death.wav'),
   battle: new Audio('sounds/battle.mp3'),
   win: new Audio('sounds/win.mp3'),
+  key: new Audio('sounds/key.wav'),
+  potion: new Audio('sounds/potion.wav'),
+  bomb: new Audio('sounds/bomb.wav'),
 };
 
 // game state. Is used in the keyboard event listener to prevent user action if game is over
@@ -21,7 +24,7 @@ let GAME_STATE = 'PLAY';
 
 // init board
 // //✓ Code creates a board with 20 rows and 25 columns (can play around to test different sizes) and render it
-const board = new Board(20, 10);
+const board = new Board(20, 25);
 board.render(boardElement);
 
 // init player
@@ -32,13 +35,23 @@ const MIDDLE_COL = Math.floor(board.rows[0].length / 2);
 const ITEM_CLASSES = [Potion, Key, Bomb];
 let RandomItem = ITEM_CLASSES[getRandom(0, 2)];
 
-const player = new Player('Heather', {
+const player = new Player('Player', {
   row: MIDDLE_ROW,
   col: MIDDLE_COL,
 });
 player.items.push(new RandomItem(getRandom(0, 3)));
 player.items.push(new RandomItem(getRandom(0, 3)));
 player.render(boardElement);
+
+function playerName() {
+  let person = prompt("What's your name, Adventurer?", '');
+  if (person == null || person == 'Player') {
+    txt = 'User cancelled the prompt.';
+  } else {
+    player.name = person;
+  }
+}
+playerName();
 
 // Keep this, used to display the information on the box on the right of the board
 updateActionCam();
@@ -154,14 +167,13 @@ document.addEventListener('keydown', ev => {
   clearInterval(monsterAttack); // stops monster attack when player moves
 
   let isMonster = board.getEntity(player.position);
-  console.log(isMonster);
   if (isMonster instanceof Monster) {
     encounterMonster(isMonster);
   }
 
   if (!ev.key.includes('Arrow') || GAME_STATE === 'GAME_OVER') return;
-  //]Following line is commented out since it caused a "index.html:1 Uncaught (in promise) DOMException" error
-  //if (sounds.bg.paused) playMusic('bg');
+
+  if (sounds.bg.paused) playMusic('bg');
 
   updateActionCam();
 });
@@ -329,16 +341,15 @@ function createPickupMenu(root, entity) {
 // //✓Update the attackBtn event listener to attack the monster
 // //✓ Update the if condition to execute only if the monster hp is 0 or lower. When true, call defeatMonster.
 // // ✓ Replace the timeout value (1000) passed to disable the attackBtn to be the player's attack speed
+let attackBtn;
 function createMonsterMenu(root, monster) {
   if (player.items.length > 0) {
     createItemActions(root, monster);
   }
   const actions = document.createElement('div');
   actions.textContent = 'Actions';
-  let attackBtn = document.createElement('button');
+  attackBtn = document.createElement('button');
   attackBtn.textContent = 'Attack';
-  // //✓ Add code here to reset the player attack timeout to allow the player to attack a monster as soon as one is encountered
-
   attackBtn.addEventListener('click', () => {
     if (monster.hp === 0) {
       defeatMonster(monster);
@@ -365,7 +376,7 @@ function createItemActions(root, monster) {
   items.textContent = 'Items';
   let noKeyArr = player.items.filter(
     item => item instanceof Potion || item instanceof Bomb
-  ); //*
+  );
   noKeyArr.forEach(item => {
     const itemBtn = document.createElement('button');
     // //✓ Add code here to set the itemBtn text to the item name

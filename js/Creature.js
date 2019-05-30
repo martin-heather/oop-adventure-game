@@ -22,7 +22,6 @@ class Creature extends Entity {
 
   attack(entity) {
     entity.hit(this.strength);
-    console.log(entity);
     updateActionCam();
   }
 }
