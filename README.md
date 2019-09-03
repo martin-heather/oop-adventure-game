@@ -1,49 +1,16 @@
-# OOP Project
+# Adventure Game
 
-1. Fork this repository
-2. Clone your forked repository
-3. Read this README file and look over the screenshots provided
+This game was an object-oriented programming project for the Concordia web development program. It was built as a desktop browser game where players navigate with arrow keys.
 
-![preview](screenshots/start.png)
+![preview](screenshots/adventuregame.jpg)
 
-## Rubrics
+## Players can:
+- Travel around and collect items from the game board
+- Fight monsters to win experience points and collect items and gold
+- Buy and sell items from the trader
+- Search dungeons to collect gold and items
+- Win the game by finding and unlocking the dungeon containing the lost puppy
+## Technologies used:
+This project was built using vanilla JavaScript, HTML, and CSS
 
-Core functionality
-
-- Board is rendered
-- Player can move
-- Player can not go past walls
-
-Additional functionality
-
-- Monsters, Items, Gold, Tradesman, Dungeons are all created and placed randomly on the board at the start of the game
-- Player can pickup items and gold
-
-Battle
-
-- Player can attack enemies
-- Monster attacks player
-- Player and Monster information is displayed
-
-Tradesman
-
-- Can buy and sell items
-
-Dungeon
-
-- Can open closed dungeons
-- Can loot open dungeons (no princess)
-- Can win the game when player goes to an opened dungeon with princess
-
-Extra features
-
-- Player can use items in battle
-- Game has all the sounds
-- Surprise me?
-
-## Instructions
-
-Implement the classes by going over each js file and reading the comments.
-Implement the game logic by going over the main.js file and reading the comments.
-
-You do not need to update **index.html**, **style.css** or **data.js** (although you can play around with MAX_MONSTERS)
+This game can be played at [heathermartin.ca/adventure/index.html](http://heathermartin.ca/adventure/index.html).
